@@ -12,9 +12,6 @@ class Author(db.Model):
   updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
   # Add validators 
-
-  def __repr__(self):
-    return f'Author(id={self.id}, name={self.name})'
   
   @validates('name')
   def validate_name(self, key, name):
@@ -23,7 +20,17 @@ class Author(db.Model):
     return name
   
   @validates('phone_number')
-  def validate_phone_number(self, key, phone_number)
+  def validate_phone_number(self, key, phone_number):
+    if (
+      not isinstance(phone_number, str)
+      or len(phone_number) != 10
+      or not phone_number.isascii()
+      or not phone_number.isdigit()
+    ):
+      raise ValueError('Phone number must be exactly 10 digits.')
+    
+  def __repr__(self):
+    return f'Author(id={self.id}, name={self.name})'
 
 class Post(db.Model):
     __tablename__ = 'posts'
