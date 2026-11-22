@@ -3,18 +3,27 @@ from sqlalchemy.orm import validates
 db = SQLAlchemy()
 
 class Author(db.Model):
-    __tablename__ = 'authors'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    name= db.Column(db.String, unique=True, nullable=False)
-    phone_number = db.Column(db.String)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+  __tablename__ = 'authors'
+  
+  id = db.Column(db.Integer, primary_key=True)
+  name= db.Column(db.String, unique=True, nullable=False)
+  phone_number = db.Column(db.String)
+  created_at = db.Column(db.DateTime, server_default=db.func.now())
+  updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    # Add validators 
+  # Add validators 
 
-    def __repr__(self):
-        return f'Author(id={self.id}, name={self.name})'
+  def __repr__(self):
+    return f'Author(id={self.id}, name={self.name})'
+  
+  @validates('name')
+  def validate_name(self, key, name):
+    if not isinstance(name, str) or not name.strip():
+      raise ValueError('Author must have a name')
+    return name
+  
+  @validates('phone_number')
+  def validate_phone_number(self, key, phone_number)
 
 class Post(db.Model):
     __tablename__ = 'posts'
